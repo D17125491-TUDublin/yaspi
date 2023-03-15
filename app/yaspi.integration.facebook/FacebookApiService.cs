@@ -3,13 +3,10 @@
 using Microsoft.Extensions.Configuration;
 using yaspi.common;
 using System.Net;
-using System;
-// using System.Text.Json;
 using yaspi.common.OAuth;
-// using Json.Net;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-public class FacebookApiService : IFacebookApiService
+
+public class FacebookApiService 
 {
     private IEventBus _eventBus;
     private string _appId;
@@ -22,12 +19,7 @@ public class FacebookApiService : IFacebookApiService
     private string _pageAccessToken;
     private string _connectionString;
     private int _facebookConnectorId;
-    /*
-        1) ask user to allow
-        2) get app access token  -- this needs connector settings, not only connection settings. 
-            connector initialisation should check if app access token is valid, if not, get a new one
-        3) 
-    */
+
     public FacebookApiService(IEventBus eventBus, string appId, string appSecret,
                              string oauthUrl, string tokenUrl, string redirectUrl,
                              string debugTokenUrl, int facebookConnectorId, string connectionString)
@@ -101,7 +93,6 @@ public class FacebookApiService : IFacebookApiService
 
     private void getAppAccessToken()
     {
-        // https://graph.facebook.com/oauth/access_token?client_id=224761249966998&client_secret=5db0a2a4573852f1292f384b30040e7b&grant_type=client_credentials
         GetYaspiConnectorDataByConnectorIdQuery query = new GetYaspiConnectorDataByConnectorIdQuery(_facebookConnectorId, _connectionString);
         var result = query.Execute();
         foreach (var x in result)
@@ -111,7 +102,6 @@ public class FacebookApiService : IFacebookApiService
                 if (string.IsNullOrWhiteSpace(x.Value))
                 {
                     _appAccessToken = callApiForAppAccessToken();
-                    //saveAppAccessToken(); this should not be saved for security reasons
                 }
                 else _appAccessToken = x.Value;
                 return;

@@ -17,7 +17,7 @@ public class ConnectorController : Controller
     private readonly ILogger<ConnectorController> _logger;
     private readonly IConnectionManager _connectionManagerService;
     private readonly IConfiguration _configuration;
-    private readonly IFacebookApiService _facebookApiService;
+    private readonly FacebookApiService _facebookApiService;
     public ConnectorController(ILogger<ConnectorController> logger, IConnectionManager connectionManagerService,
                             IConfiguration configuration, FacebookApiService facebookApiService)
     {
@@ -41,19 +41,7 @@ public class ConnectorController : Controller
     [HttpPost]
     public IActionResult Connect(string submit, int connectorId, string connectorName)
     {
-        // HttpRequest request = HttpContext.Request;
-        // if (connectorId == 1) return Redirect("/Connector/ConnectTwitter");
-        // if (submit == "OK")
-        // {
-        //     var value = _connectionManagerService.GetConnectorViewModel(connectorName);
-        //     string username = User.Identity.Name;
-        //     _connectionManagerService.Connect(username, connectorId);
-        //     return View(value);
-        // }
-        // else
-        // {
         return Redirect("/Home/ListConnectors");
-        // }
     }
 
 
@@ -129,7 +117,6 @@ public class ConnectorController : Controller
         string redirect_uri = _configuration.GetValue<string>("Facebook:redirect_url");
         string token_url = _configuration.GetValue<string>("Facebook:token_url");
         string client_secret = _configuration.GetValue<string>("Facebook:app_secret");
-        string code_challenge = "challenge";
 
         if (error == "access_denied")
         {
@@ -137,11 +124,6 @@ public class ConnectorController : Controller
         }
         if (string.IsNullOrWhiteSpace(code) && string.IsNullOrWhiteSpace(stateIn)) // initial state
         {
-            string stateOut = "step1";
-            string code_challenge_method = "plain"; //_configuration.GetValue<string>("Twitter:CodeChallengeMethod");
-            // ?%20%20%20client_id=224761249966998&redirect_uri=https%3A%2F%2F127.0.0.1%3A7144%2FConnector%2FConnectFacebook&state=step1
-            // &scope={scope}&code_challenge={code_challenge}&code_challenge_method={code_challenge_method}
-            //string url =$"https://www.facebook.com/v16.0/dialog/oauth?response_type=code&client_id={client_id}&redirect_uri={redirect_uri}&state={stateOut}&scope=pages_manage_posts";
             string url = _facebookApiService.GetAuthRequestUrl();
             return Redirect(url);
         }
@@ -150,7 +132,6 @@ public class ConnectorController : Controller
             // TODO: User pressed 'cancel' button
             WebClient wc = new WebClient();
             wc.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-            string stateOut = "step2";
             string parameters = $"client_id={client_id}&redirect_uri={redirect_uri}&client_secret={client_secret}&code={code}";
             string ret = null;
             try { ret = wc.UploadString(token_url, parameters); }
@@ -176,19 +157,6 @@ public class ConnectorController : Controller
             config.AddRange(data);
             string username = User.Identity.Name;
             _connectionManagerService.Connect(username, 2, config.ToArray());
-
-            // TODO: get user's pages
-            // https://graph.facebook.com/v16.0/me/accounts?access_token={access-token}
-            // get user ID
-
-            // get app access token
-            //string grant_type = "client_credentials";
-            //parameters = $"grant_type={grant_type}&client_id={client_id}&client_secret={client_secret}";
-            //ret = wc.UploadString(token_url, parameters);
-            //var d2 = JsonSerializer.Deserialize<OauthBearer>(ret);
-            // inspect user token to get ID
-            // get page IDs and access token 
-
         }
         return View();
     }

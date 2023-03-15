@@ -17,7 +17,8 @@ public class FacebookBackgroundService : BackgroundService
     private readonly FacebookApiService _facebookApiService;
     private readonly ILogger<FacebookBackgroundService> _logger;
 
-    public FacebookBackgroundService(ILogger<FacebookBackgroundService> logger, IConfiguration configuration, IEventBus eventBus, FacebookApiService facebookApiService)
+    public FacebookBackgroundService(ILogger<FacebookBackgroundService> logger, IConfiguration configuration, 
+                                            IEventBus eventBus, FacebookApiService facebookApiService)
     {
         _configuration = configuration;
         _connectionString = _configuration.GetConnectionString("DefaultConnection");

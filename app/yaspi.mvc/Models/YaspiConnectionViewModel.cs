@@ -5,7 +5,6 @@ public class YaspiConnectionViewModel{
     public string YaspiConnectionName {get;set;}
     public string Username {get;set;}
     public string RedirectUrl {get;set;}
-    // public string PublicKeyToken {get;set;}
     public bool IsActive{get;set;}
     public KeyValuePair<string,string>[] ConnectionData {get;set;}
 }
