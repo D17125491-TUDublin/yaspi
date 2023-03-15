@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "yaspi.common", "app\yaspi.c
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "yaspi.integration.facebook", "app\yaspi.integration.facebook\yaspi.integration.facebook.csproj", "{CAA9AAF5-6C2F-49D4-973F-E5C13987E24C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "yaspi.integration.twitter", "app\yaspi.integration.twitter\yaspi.integration.twitter.csproj", "{DD03F1FC-C8FF-450E-9B74-3A03894C12B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,11 +40,16 @@ Global
 		{CAA9AAF5-6C2F-49D4-973F-E5C13987E24C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAA9AAF5-6C2F-49D4-973F-E5C13987E24C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CAA9AAF5-6C2F-49D4-973F-E5C13987E24C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD03F1FC-C8FF-450E-9B74-3A03894C12B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD03F1FC-C8FF-450E-9B74-3A03894C12B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD03F1FC-C8FF-450E-9B74-3A03894C12B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD03F1FC-C8FF-450E-9B74-3A03894C12B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{366C753D-72FB-42F3-B04A-C06A79DDB4B3} = {21540A12-AED7-4943-A0D2-5053CDB5796E}
 		{E959EDC8-ADD2-4D27-A5AD-794604A89382} = {21540A12-AED7-4943-A0D2-5053CDB5796E}
 		{9645D0F1-3B89-427B-9650-73C263A3260F} = {21540A12-AED7-4943-A0D2-5053CDB5796E}
 		{CAA9AAF5-6C2F-49D4-973F-E5C13987E24C} = {21540A12-AED7-4943-A0D2-5053CDB5796E}
+		{DD03F1FC-C8FF-450E-9B74-3A03894C12B3} = {21540A12-AED7-4943-A0D2-5053CDB5796E}
 	EndGlobalSection
 EndGlobal

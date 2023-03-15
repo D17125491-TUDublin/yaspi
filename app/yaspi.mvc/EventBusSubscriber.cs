@@ -1,6 +1,6 @@
 namespace yaspi.mvc;
 using yaspi.common;
-using yaspi.twitter;
+using yaspi.integration.twitter;
 public class EventBusSubscriber : IEventBusSubscriber
 {
     public void SubscribeAll(IEventBus eventBus)

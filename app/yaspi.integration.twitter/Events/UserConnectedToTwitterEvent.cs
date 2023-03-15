@@ -1,4 +1,4 @@
-namespace yaspi.twitter;
+namespace yaspi.integration.twitter;
 
 using yaspi.common;
 

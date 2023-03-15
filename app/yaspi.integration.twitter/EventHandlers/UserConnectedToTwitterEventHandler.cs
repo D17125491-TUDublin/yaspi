@@ -1,4 +1,4 @@
-namespace yaspi.twitter;
+namespace yaspi.integration.twitter;
 
 using Microsoft.Extensions.Configuration;
 using yaspi.common;

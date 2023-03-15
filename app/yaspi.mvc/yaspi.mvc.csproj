@@ -28,8 +28,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\yaspi.common\yaspi.common.csproj" />
-    <ProjectReference Include="..\yaspi.twitter\yaspi.twitter.csproj" />
     <ProjectReference Include="..\yaspi.integration.facebook\yaspi.integration.facebook.csproj" />
+    <ProjectReference Include="..\yaspi.integration.twitter\yaspi.integration.twitter.csproj" />
   </ItemGroup>
 
 </Project>
