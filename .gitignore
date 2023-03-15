@@ -4,4 +4,4 @@ TODO.org~
 Dockerfile
 **/bin/
 **/obj/
-**/apsettings.json
+**/appsettings.json
