@@ -124,7 +124,7 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult WebApi(string action)
+    public IActionResult WebApi(string action) // git test
     {
         YaspiApiKey key = null;
         string username = User.Identity.Name;
