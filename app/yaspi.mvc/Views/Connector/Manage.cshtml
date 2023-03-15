@@ -1,0 +1,39 @@
+@model ManageVewModel
+@{
+    ViewData["Title"] = "Manage";
+}
+
+<div class="text-center">
+    <h1 class="display-4">MANAGE CONNECTIONS</h1>
+</div>
+<form action="" type="input" method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Platform</th>
+                <th scope="col">Label</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (YaspiConnectionViewModel item in Model.Connections)
+            {
+                <tr>
+                    <td scope="row">@item.YaspiConnectorName</td>
+                    <td>@item.YaspiConnectionName </td>
+                    <td>
+                        <button value="@item.Id" class='btn @(!item.IsActive ? "btn-success" : "btn-danger")' name="Toggle"
+                            type="submit">@(item.IsActive ? "Disable" : "Enable")</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>
+
+@if (Model.Connections.Count == 0)
+{
+    <div>You are not connected to any platform yet. To establish a connection, please visit
+        <a href="/Home/ListConnectors">this page</a>.
+    </div>
+}

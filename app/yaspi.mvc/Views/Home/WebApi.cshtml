@@ -1,0 +1,26 @@
+@model WebApiVewModel
+@{
+    ViewData["Title"] = "WebApi";
+}
+
+<form action="" type="input" method="post">
+
+
+    @if (Model == null)
+    {
+        <h1>Your Web API Key is not created yet</h1>
+        <br />
+        <p>Click button to generate an API Key: <br />
+            <button value="generate" name="action" class="btn btn-success" type="submit">Generate Api Key</button>
+        </p>
+    }
+    else
+    {
+        <h1>WebApi</h1>
+        <br/>
+        <p>Your current API Key is: @Model.Key</p>
+        <p>Click to re-generate API Key: <button class="btn btn-danger" value="generate" name="action" type="submit">Re-generate Api Key</button></p>
+        <p>Click to disable/enable API functionality: <button value="toggle" name="action" class='@(Model.IsActive ? "btn btn-danger" : "btn btn-success")' type="submit">@(Model.IsActive ? "Disable" :
+            "Enable")</button></p>
+    }
+</form>

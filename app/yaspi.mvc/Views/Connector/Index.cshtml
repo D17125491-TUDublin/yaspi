@@ -1,0 +1,19 @@
+@model ConnectorViewModel
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="text-center">
+    <h1 class="display-4"></h1>
+    Are you sure you wish to connect to @Model.Name?
+
+    HERE: it sould be a redirection to a real service - a real connector.
+
+</div>
+<form type="input" action="/Connector/Connect" >
+    <input type="hidden" name="connectorId" value="@Model.Id"/>
+    <input type="hidden" name="connectorName" value="@Model.Name"/>
+    <!-- we can add label here -->
+    <button type="submit" name="submit" value="OK">Yes</button>
+    <button type="submit" name="submit" value="CANCEL">Cancel</button>
+</form>

@@ -1,0 +1,7 @@
+TODO.org
+TODO.org~
+.#TODO.org
+Dockerfile
+**/bin/
+**/obj/
+**/apsettings.json

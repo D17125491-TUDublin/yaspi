@@ -1,0 +1,51 @@
+﻿@model HomeViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+
+
+<div class="text-center">
+    <h1 class="display-4">Publish a Message</h1>
+    <h5>Please edit and publish a message. To check which connection will be used to send it, please go <a
+            href="/Connector/Manage">here</a>.</h5>
+    <p>
+    <ul>
+
+    </ul>
+    </p>
+</div>
+@if (Model.HasErrors)
+{
+    @await Html.PartialAsync("/Views/Shared/_ErrorPartial.cshtml", Model.ErrorMessage)
+}else if(!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    @await Html.PartialAsync("/Views/Shared/_SuccessPartial.cshtml", Model.SuccessMessage)
+}
+@if (Model.IsConnected)
+{
+    <form action="" type="input" method="post">
+        <div class="form-group">
+            <textarea id='message-input' class="md-textarea form-control" name="UserInput" rows="20" cols="50"
+                placeholder="plase type your message here"></textarea>
+            <div id="character-indicator" style="text-align: right;">&nbsp;</div>
+
+            <button class="btn btn-primary" id="Submit" value="Publish" type="Submit" action="Submit"
+                name="Submit">Publish</button>
+        </div>
+    </form>
+
+    <div></div>
+}
+else
+{
+    <div>You are not connected to any platform or all your connections are disabled.
+        Please visit folowing pages to connect to a platform or enable your connections:
+        <ul>
+            <li><a href="/Home/ListConnectors">Connect</a>.</li>
+            <li><a href="/Connector/Manage">Manage Connections</a></li>
+        </ul>
+    </div>
+    <p></p>
+}

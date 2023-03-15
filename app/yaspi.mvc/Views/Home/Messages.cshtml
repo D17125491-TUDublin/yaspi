@@ -1,0 +1,40 @@
+@model MessagesViewModel
+@{
+    ViewData["Title"] = "Messages";
+}
+
+
+
+@* <form action="" type="input" method="post"> *@
+    <div id="accordion">
+@foreach (var item in @Model.Messages.Where(x => x.IsRead == false))
+{
+  <div class="card" id="card-@item.UserMessageId" style="margin-bottom:10px">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        @item.Subject
+        <button style="float: right;" onclick="markAsRead(@item.UserMessageId)" value="@item.UserMessageId" 
+                name="messageIdToSetAsRead" class="btn btn-secondary btn-lg btn-block pull-right" 
+                data-toggle="collapse" data-target="#collapse-@item.UserMessageId" aria-expanded="true" 
+                aria-controls="collapse-@item.UserMessageId">
+            Delete
+        </button>
+         </h5>
+    </div>
+      <div id="collapse-@item.UserMessageId" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+      <div class="card-body">  
+        <p>@item.Body</p>
+        <p>@item.Created</p>
+        <p>From: @item.SourceName</p>
+          </div>
+    </div>
+  </div>
+  
+    
+}
+</div>
+@* </form> *@
+@if (Model.Messages.Where(x => x.IsRead == false).Count() == 0)
+{
+    <p>You have no messages.</p>
+}

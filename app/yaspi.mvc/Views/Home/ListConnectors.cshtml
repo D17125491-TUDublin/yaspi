@@ -1,0 +1,19 @@
+@model List<ConnectorViewModel>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<div style="text-align: center;">
+    <h1>Connect</h1>
+    <h4>Please select social media platform to connect to.</h4>
+    <p>
+        You will be redirected to a social media platform for authorisation.
+    </p>
+    <div class="text-center">
+        @foreach (var item in @Model)
+        {
+            <a href="@item.RedirectUrl">
+                <img src="@item.Base64LargeIcon" width="200" height="200" style="margin-left: 20px;" />
+            </a>
+        }
+    </div>
+</div>
