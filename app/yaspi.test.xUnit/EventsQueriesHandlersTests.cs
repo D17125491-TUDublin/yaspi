@@ -22,14 +22,15 @@ public class EventsQueriesHandlersTests
     public void HandlerInsertsNewConnectionInfoToDatabase()
     {
         // Arrange
+        string username = Assets.UserName_A;
         var yaspiConnection = new YaspiConnection();
         string name = Guid.NewGuid().ToString();
         yaspiConnection.YaspiConnectionName = name;
         yaspiConnection.YaspiConnectorId = 1;
-        yaspiConnection.Username = "test";
+        yaspiConnection.Username = username;
         // eventBus.Subscribe<AddYaspiConnectionEvent, AddYaspiConnectionEventHandler>(); -- tests failed because subscription was moved to EventBus constructor
         var e = new AddYaspiConnectionEvent(yaspiConnection);
-        var q = new ListYaspiConnectionsQuery("test", connectionString);
+        var q = new ListYaspiConnectionsQuery(username, connectionString);
         // Act
         eventBus.Publish(e);
         // Assert
@@ -83,13 +84,14 @@ public class EventsQueriesHandlersTests
     public void SetYaspiConnectionActiveEventHandlerWorks()
     {
         // Arrange
+        string username = Assets.UserName_A;
         var yaspiConnection = new YaspiConnection();
         string name = Guid.NewGuid().ToString();
         yaspiConnection.YaspiConnectionName = name;
         yaspiConnection.YaspiConnectorId = 1;
-        yaspiConnection.Username = "test";
+        yaspiConnection.Username = username;
         var e = new AddYaspiConnectionEvent(yaspiConnection);
-        var q = new ListYaspiConnectionsQuery("test", connectionString);
+        var q = new ListYaspiConnectionsQuery(username, connectionString);
         // Act
         eventBus.Publish(e);
         var results = q.Execute();

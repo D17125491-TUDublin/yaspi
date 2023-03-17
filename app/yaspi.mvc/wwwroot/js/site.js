@@ -16,7 +16,7 @@ function updateMessageIndicator() {
             }
         },
         error: function (xhr, status, error) {
-            alert(error);
+            
         }
     });
 }

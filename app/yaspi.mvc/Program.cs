@@ -6,6 +6,7 @@ using yaspi.common;
 using yaspi.mvc.BackgroundServices;
 using yaspi.mvc;
 using yaspi.integration.facebook;
+using yaspi.integration.twitter;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,7 @@ builder.Services.AddHostedService(provider => provider.GetRequiredService<Twitte
 builder.Services.AddSingleton<FacebookBackgroundService>();
 builder.Services.AddHostedService(provider => provider.GetRequiredService<FacebookBackgroundService>());
 builder.Services.AddSingleton<FacebookApiService>();
+builder.Services.AddSingleton<TwitterApiService>();
 // ****************************************************************
 
 

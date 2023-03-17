@@ -7,7 +7,7 @@ using yaspi.common;
 namespace yaspi.mvc.Controllers;
 
 [Authorize]
-public class HomeController : Controller
+public class HomeController : YaspiController
 {
     private readonly ILogger<HomeController> _logger;
     private readonly IConnectionManager _connectionManagerService;
@@ -15,7 +15,8 @@ public class HomeController : Controller
     private readonly IEventBus _eventBus;
     private readonly int _messageMaxChar;
 
-    public HomeController(ILogger<HomeController> logger, IConnectionManager connectionManagerService, IConfiguration configuration, IEventBus eventBus)
+    public HomeController(ILogger<HomeController> logger, IConnectionManager connectionManagerService, 
+                            IConfiguration configuration, IEventBus eventBus)
     {
         _configuration = configuration;
         _logger = logger;
@@ -37,7 +38,7 @@ public class HomeController : Controller
         model.MessageMaxChar = _messageMaxChar;
         try
         {
-            _connectionManagerService.PostToAllActiveConnections(User.Identity.Name, model.UserInput);
+            _connectionManagerService.PostToAllActiveConnections(GetUserName(), model.UserInput);
         }
         catch (System.Exception e)
         {
@@ -67,7 +68,7 @@ public class HomeController : Controller
 
     public IActionResult ListConnections()
     {
-        List<YaspiConnectionViewModel> connections = _connectionManagerService.GetActiveUserConnections(User.Identity.Name);
+        List<YaspiConnectionViewModel> connections = _connectionManagerService.GetActiveUserConnections(GetUserName());
         return View(connections);
     }
 
@@ -79,13 +80,13 @@ public class HomeController : Controller
 
     private bool checkIsConnected()
     {
-        string username = User.Identity.Name;
+        string username = GetUserName();
         return _connectionManagerService.HasActiveConnection(username);
     }
 
     public IActionResult Messages()
     {
-        MessagesViewModel messages = _connectionManagerService.GetUserMessagesVewModel(User.Identity.Name);
+        MessagesViewModel messages = _connectionManagerService.GetUserMessagesVewModel(GetUserName());
         return View(messages);
     }
 
@@ -93,7 +94,7 @@ public class HomeController : Controller
     public IActionResult Messages(int messageIdToSetAsRead)
     {
         _connectionManagerService.SetUserMessageRead(messageIdToSetAsRead);
-        MessagesViewModel messages = _connectionManagerService.GetUserMessagesVewModel(User.Identity.Name);
+        MessagesViewModel messages = _connectionManagerService.GetUserMessagesVewModel(GetUserName());
         return View(messages);
     }
 
@@ -105,14 +106,14 @@ public class HomeController : Controller
     }
     public IActionResult GetUnreadMessagesCount()
     {
-        int count = _connectionManagerService.GetUnreadMessagesCount(User.Identity.Name);
+        int count = _connectionManagerService.GetUnreadMessagesCount(GetUserName());
         return Json(count);
     }
 
     [HttpGet]
     public IActionResult WebApi()
     {
-        string username = User.Identity.Name;
+        string username = GetUserName();
         GetYaspiApiKeyQuery query = new GetYaspiApiKeyQuery(username, _configuration.GetConnectionString("DefaultConnection"));
         var res1 = query.Execute();
         if (res1 == null) return View(null);
@@ -127,7 +128,7 @@ public class HomeController : Controller
     public IActionResult WebApi(string action) // git test
     {
         YaspiApiKey key = null;
-        string username = User.Identity.Name;
+        string username = GetUserName();
         GetYaspiApiKeyQuery query = new GetYaspiApiKeyQuery(username, _configuration.GetConnectionString("DefaultConnection"));
         switch (action)
         {

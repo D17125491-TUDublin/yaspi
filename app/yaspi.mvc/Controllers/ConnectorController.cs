@@ -1,30 +1,32 @@
-using System.Diagnostics;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using yaspi.mvc.Code;
 using yaspi.mvc.Models;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using yaspi.common.OAuth;
 using Microsoft.AspNetCore.Authorization;
 using yaspi.integration.facebook;
+using yaspi.integration.twitter;
 
 namespace yaspi.mvc.Controllers;
 
 [Authorize]
-public class ConnectorController : Controller
+public class ConnectorController : YaspiController
 {
     private readonly ILogger<ConnectorController> _logger;
     private readonly IConnectionManager _connectionManagerService;
     private readonly IConfiguration _configuration;
     private readonly FacebookApiService _facebookApiService;
+    private readonly TwitterApiService _twitterApiService;
     public ConnectorController(ILogger<ConnectorController> logger, IConnectionManager connectionManagerService,
-                            IConfiguration configuration, FacebookApiService facebookApiService)
+                            IConfiguration configuration, 
+                            FacebookApiService facebookApiService, TwitterApiService twitterApiService)
     {
         _logger = logger;
         _connectionManagerService = connectionManagerService;
         _configuration = configuration;
         _facebookApiService = facebookApiService;
+        _twitterApiService = twitterApiService;
     }
 
     public IActionResult Index(string connector)
@@ -51,11 +53,6 @@ public class ConnectorController : Controller
         Request.Query.TryGetValue("code", out var code);
         Request.Query.TryGetValue("state", out var stateIn);
         Request.Query.TryGetValue("error", out var error);
-        string client_id = _configuration.GetValue<string>("Twitter:client_id");
-        string redirect_uri = _configuration.GetValue<string>("Twitter:redirect_url");
-        string token_url = _configuration.GetValue<string>("Twitter:token_url");
-        string scope = _configuration.GetValue<string>("Twitter:scope");
-        string code_challenge = "challenge";
 
         if (error == "access_denied")
         {
@@ -63,39 +60,13 @@ public class ConnectorController : Controller
         }
         if (string.IsNullOrWhiteSpace(code) && string.IsNullOrWhiteSpace(stateIn)) // initial state
         {
-            string stateOut = "step1";
-            string code_challenge_method = "plain"; //_configuration.GetValue<string>("Twitter:CodeChallengeMethod");
-            string url = $"https://twitter.com/i/oauth2/authorize?response_type=code&client_id={client_id}&redirect_uri={redirect_uri}&scope={scope}&state={stateOut}&code_challenge={code_challenge}&code_challenge_method={code_challenge_method}";
-
+            var url = _twitterApiService.GetAuthRequestUrl();
             return Redirect(url);
         }
         else if (stateIn == "step1")
         {
-            // TODO: User pressed 'cancel' button
-            WebClient wc = new WebClient();
-            wc.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-            string stateOut = "step2";
-            string parameters = $"code={code}&grant_type=authorization_code&client_id={client_id}&redirect_uri={redirect_uri}&code_verifier={code_challenge}&state={stateOut}";
-            string ret = null;
-            try { ret = wc.UploadString(token_url, parameters); }
-            catch (WebException e)
-            {// this can happen when user uses <back> button in browser
-                using (var reader = new StreamReader(e.Response.GetResponseStream()))
-                {
-                    string err = reader.ReadToEnd();
-                }
-            }
-            System.Console.WriteLine(ret);
-            var d = JsonSerializer.Deserialize<OauthBearer>(ret);
-            KeyValuePair<string, string>[] config = new KeyValuePair<string, string>[]
-            {
-                new KeyValuePair<string, string>("access_token", d.access_token),
-                new KeyValuePair<string, string>("refresh_token", d.refresh_token),
-                new KeyValuePair<string, string>("expires_in", d.expires_in.ToString()),
-                new KeyValuePair<string, string>("scope", d.scope),
-                new KeyValuePair<string, string>("token_type", d.token_type),
-            };
-            string username = User.Identity.Name;
+            var config = _twitterApiService.GetConnectionData(code);
+            string username = GetUserName();
             _connectionManagerService.Connect(username, 1, config);
         }
         return View();
@@ -149,13 +120,12 @@ public class ConnectorController : Controller
             {
                 new KeyValuePair<string, string>("access_token", d.access_token),
                 new KeyValuePair<string, string>("expires_in", d.expires_in.ToString()),
-                //new KeyValuePair<string, string>("scope", d.scope),
                 new KeyValuePair<string, string>("token_type", d.token_type),
             };
             List<KeyValuePair<string, string>> config = new List<KeyValuePair<string, string>>();
             config.AddRange(tokenInfo);
             config.AddRange(data);
-            string username = User.Identity.Name;
+            string username = GetUserName();
             _connectionManagerService.Connect(username, 2, config.ToArray());
         }
         return View();
@@ -164,7 +134,6 @@ public class ConnectorController : Controller
     [HttpPost]
     public IActionResult ConnectFacebook(string x)
     {
-
         return View();
     }
 
@@ -172,7 +141,7 @@ public class ConnectorController : Controller
     public IActionResult ConnectTwitter(string x)
     {
         HttpRequest request = HttpContext.Request;
-        string username = User.Identity.Name;
+        string username = GetUserName();
         return Redirect("/Home/ListConnectors");
     }
 
@@ -183,7 +152,7 @@ public class ConnectorController : Controller
 
     public IActionResult Manage()
     {
-        List<YaspiConnectionViewModel> connections = _connectionManagerService.GetAllUserConnections(User.Identity.Name);
+        List<YaspiConnectionViewModel> connections = _connectionManagerService.GetAllUserConnections(GetUserName());
         var model = new ManageVewModel();
         model.Connections = connections;
         return View(model);
@@ -192,8 +161,8 @@ public class ConnectorController : Controller
     [HttpPost]
     public IActionResult Manage(ManageVewModel model)
     {
-        _connectionManagerService.ToggleUserConnectionActiveById(User.Identity.Name, model.Toggle);
-        model.Connections = _connectionManagerService.GetAllUserConnections(User.Identity.Name);
+        _connectionManagerService.ToggleUserConnectionActiveById(GetUserName(), model.Toggle);
+        model.Connections = _connectionManagerService.GetAllUserConnections(GetUserName());
         return View(model);
     }
 }

@@ -40,28 +40,7 @@ public class FacebookBackgroundService : BackgroundService
                 {
                     GetYaspiConnectionByIdQuery query2 = new GetYaspiConnectionByIdQuery(item.YaspiConnectionId, _connectionString);
                     YaspiConnection connection = query2.Execute();
-                    string page_id = null, page_access_token = null;
-                    foreach (var d in connection.ConnectionData)
-                    {
-                        switch (d.Key)
-                        {
-                            case "page_id":
-                                page_id = d.Value;
-                                break;
-                            case "page_access_token":
-                                page_access_token = d.Value;
-                                break;
-                        }
-                        if (page_id != null && page_access_token != null)
-                        {
-                            string location = _facebookApiService.PostToPage(page_id, page_access_token, item.Text);
-                            YaspiMessageSentSuccessEvent ev = new YaspiMessageSentSuccessEvent(item.YaspiMessageId, location);
-                            _eventBus.Publish(ev);
-                            page_id = null;
-                            page_access_token = null;
-                        }
-                    }
-
+                    _facebookApiService.SendMessage(connection, item);
                 }
             }
         });

@@ -6,8 +6,9 @@ using System.Net;
 using yaspi.common.OAuth;
 using Newtonsoft.Json;
 
-public class FacebookApiService 
+public class FacebookApiService
 {
+    public static int ConnectorId = 2;
     private IEventBus _eventBus;
     private string _appId;
     private string _appSecret;
@@ -62,7 +63,7 @@ public class FacebookApiService
     }
 
     // step 2
-    public KeyValuePair<string,string>[] GetConnectionData(OauthBearer token)
+    public KeyValuePair<string, string>[] GetConnectionData(OauthBearer token)
     {
         List<KeyValuePair<string, string>> data_out = new List<KeyValuePair<string, string>>();
         string url1 = $"{_debugTokenUrl}?input_token={token.access_token}&access_token={_appAccessToken}";
@@ -74,19 +75,45 @@ public class FacebookApiService
         string url2 = $"https://graph.facebook.com/v16.0/{x.data.user_id}/accounts?access_token={token.access_token}";
         var response2 = wc.DownloadString(url2);
         dynamic y = JsonConvert.DeserializeObject(response2);
-        foreach( var z in y.data){
+        foreach (var z in y.data)
+        {
             data_out.Add(new KeyValuePair<string, string>("page_id", (string)z.id));
-            data_out.Add(new KeyValuePair<string, string>("page_access_token", (string) z.access_token));
+            data_out.Add(new KeyValuePair<string, string>("page_access_token", (string)z.access_token));
         }
         return data_out.ToArray();
     }
 
-    public string PostToPage(string pageId, string pageAccessToken, string message)
+    public void SendMessage(YaspiConnection connection, YaspiMessage message)
+    {
+        string page_id = null, page_access_token = null;
+        foreach (var d in connection.ConnectionData)
+        {
+            switch (d.Key)
+            {
+                case "page_id":
+                    page_id = d.Value;
+                    break;
+                case "page_access_token":
+                    page_access_token = d.Value;
+                    break;
+            }
+            if (page_id != null && page_access_token != null)
+            {
+                string location = postToPage(page_id, page_access_token, message.Text);
+                YaspiMessageSentSuccessEvent ev = new YaspiMessageSentSuccessEvent(message.YaspiMessageId, location);
+                _eventBus.Publish(ev);
+                page_id = null;
+                page_access_token = null;
+            }
+        }
+    }
+
+    private string postToPage(string pageId, string pageAccessToken, string message)
     {
         message = System.Web.HttpUtility.UrlEncode(message);
         var url = $"https://graph.facebook.com/{pageId}/feed?message={message}&access_token={pageAccessToken}";
         var wc = new WebClient();
-        var response = wc.UploadString(url,"");
+        var response = wc.UploadString(url, "");
         dynamic x = JsonConvert.DeserializeObject(response);
         return x.id;
     }
