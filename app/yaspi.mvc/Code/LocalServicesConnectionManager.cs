@@ -35,11 +35,6 @@ public class LocalServicesConnectionManager : IConnectionManager
         return connectors;
     }
 
-    public List<YaspiConnectionViewModel> GetActiveUserConnections(string username)
-    {
-        throw new NotImplementedException();
-    }
-
     public List<YaspiConnectionViewModel> GetAllUserConnections(string username)
     {
         ListYaspiConnectionsQuery query = new ListYaspiConnectionsQuery(username, _connectionString);
@@ -91,11 +86,6 @@ public class LocalServicesConnectionManager : IConnectionManager
                 _eventBus.Publish(@event);
             }
         }
-    }
-
-    public void SetActive(string username, int connectionId, bool isActive)
-    {
-        throw new NotImplementedException();
     }
 
     public void ToggleUserConnectionActiveById(string name, int connectionId)

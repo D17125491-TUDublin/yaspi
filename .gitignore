@@ -6,3 +6,4 @@ Dockerfile
 **/obj/
 **/appsettings.json
 plantuml
+**/NOTES.txt

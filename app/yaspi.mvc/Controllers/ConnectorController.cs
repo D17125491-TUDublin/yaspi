@@ -16,11 +16,11 @@ public class ConnectorController : YaspiController
     private readonly ILogger<ConnectorController> _logger;
     private readonly IConnectionManager _connectionManagerService;
     private readonly IConfiguration _configuration;
-    private readonly FacebookApiService _facebookApiService;
-    private readonly TwitterApiService _twitterApiService;
+    private readonly IFacebookApiService _facebookApiService;
+    private readonly ITwitterApiService _twitterApiService;
     public ConnectorController(ILogger<ConnectorController> logger, IConnectionManager connectionManagerService,
                             IConfiguration configuration, 
-                            FacebookApiService facebookApiService, TwitterApiService twitterApiService)
+                            IFacebookApiService facebookApiService, ITwitterApiService twitterApiService)
     {
         _logger = logger;
         _connectionManagerService = connectionManagerService;
@@ -115,7 +115,7 @@ public class ConnectorController : YaspiController
             }
             System.Console.WriteLine(ret);
             var d = JsonSerializer.Deserialize<OauthBearer>(ret);
-            var data = _facebookApiService.GetConnectionData(d);
+            var data = _facebookApiService.GetConnectionData(d.access_token);
             KeyValuePair<string, string>[] tokenInfo = new KeyValuePair<string, string>[]
             {
                 new KeyValuePair<string, string>("access_token", d.access_token),

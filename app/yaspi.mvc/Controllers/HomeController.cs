@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using yaspi.mvc.Code;
 using yaspi.mvc.Models;
 using yaspi.common;
+
 namespace yaspi.mvc.Controllers;
 
 [Authorize]
@@ -66,12 +67,6 @@ public class HomeController : YaspiController
         return View(connectors);
     }
 
-    public IActionResult ListConnections()
-    {
-        List<YaspiConnectionViewModel> connections = _connectionManagerService.GetActiveUserConnections(GetUserName());
-        return View(connections);
-    }
-
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
@@ -104,6 +99,7 @@ public class HomeController : YaspiController
         _connectionManagerService.SetUserMessageRead(data.Id);
         return Json(new { Status = "Success" });
     }
+    
     public IActionResult GetUnreadMessagesCount()
     {
         int count = _connectionManagerService.GetUnreadMessagesCount(GetUserName());
@@ -125,9 +121,8 @@ public class HomeController : YaspiController
     }
 
     [HttpPost]
-    public IActionResult WebApi(string action) // git test
+    public IActionResult WebApi(string action) 
     {
-        YaspiApiKey key = null;
         string username = GetUserName();
         GetYaspiApiKeyQuery query = new GetYaspiApiKeyQuery(username, _configuration.GetConnectionString("DefaultConnection"));
         switch (action)

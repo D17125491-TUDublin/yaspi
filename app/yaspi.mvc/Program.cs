@@ -30,8 +30,19 @@ builder.Services.AddSingleton<TwitterBackgroundService>();
 builder.Services.AddHostedService(provider => provider.GetRequiredService<TwitterBackgroundService>());
 builder.Services.AddSingleton<FacebookBackgroundService>();
 builder.Services.AddHostedService(provider => provider.GetRequiredService<FacebookBackgroundService>());
-builder.Services.AddSingleton<FacebookApiService>();
-builder.Services.AddSingleton<TwitterApiService>();
+
+bool USE_TEST_API_SERVICES = true;
+
+if (USE_TEST_API_SERVICES)
+{
+    builder.Services.AddSingleton<IFacebookApiService,TestFacebookApiService>();
+    builder.Services.AddSingleton<ITwitterApiService,TestTwitterApiService>();
+}
+else
+{
+    builder.Services.AddSingleton<IFacebookApiService,FacebookApiService>();
+    builder.Services.AddSingleton<ITwitterApiService,TwitterApiService>();
+}
 // ****************************************************************
 
 

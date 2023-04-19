@@ -8,10 +8,10 @@ using yaspi.common.OAuth;
 
 namespace yaspi.integration.twitter;
 
-public class TwitterApiService
+public class TwitterApiService : ITwitterApiService
 {
 
-    public static int ConnectorId = 1;
+    public int ConnectorId { get { return 1; } }
     private readonly IEventBus _eventBus;
     private readonly IConfiguration _configuration;
     private string client_id;

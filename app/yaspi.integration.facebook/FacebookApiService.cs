@@ -6,9 +6,9 @@ using System.Net;
 using yaspi.common.OAuth;
 using Newtonsoft.Json;
 
-public class FacebookApiService
+public class FacebookApiService : IFacebookApiService
 {
-    public static int ConnectorId = 2;
+    public int ConnectorId { get { return 2; } }
     private IEventBus _eventBus;
     private string _appId;
     private string _appSecret;
@@ -63,16 +63,16 @@ public class FacebookApiService
     }
 
     // step 2
-    public KeyValuePair<string, string>[] GetConnectionData(OauthBearer token)
+    public KeyValuePair<string, string>[] GetConnectionData(string access_token)
     {
         List<KeyValuePair<string, string>> data_out = new List<KeyValuePair<string, string>>();
-        string url1 = $"{_debugTokenUrl}?input_token={token.access_token}&access_token={_appAccessToken}";
+        string url1 = $"{_debugTokenUrl}?input_token={access_token}&access_token={_appAccessToken}";
         var wc = new WebClient();
         var response = wc.DownloadString(url1);
         dynamic x = JsonConvert.DeserializeObject(response);
         string user_id = x.data.user_id;
         data_out.Add(new KeyValuePair<string, string>("user_id", user_id));
-        string url2 = $"https://graph.facebook.com/v16.0/{x.data.user_id}/accounts?access_token={token.access_token}";
+        string url2 = $"https://graph.facebook.com/v16.0/{x.data.user_id}/accounts?access_token={access_token}";
         var response2 = wc.DownloadString(url2);
         dynamic y = JsonConvert.DeserializeObject(response2);
         foreach (var z in y.data)

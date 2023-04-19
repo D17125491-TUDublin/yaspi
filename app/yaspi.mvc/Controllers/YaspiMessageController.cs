@@ -27,7 +27,7 @@ public class YaspiMessageController : ControllerBase {
         {
             GetYaspiApiKeyQuery query = new GetYaspiApiKeyQuery(username,_configuration.GetConnectionString("DefaultConnection"));
             YaspiApiKey apiKey = query.Execute();
-            if(apiKey == null || apiKey.Username.ToLower() != username || apiKey.Key != key || !apiKey.IsActive)
+            if(apiKey == null || apiKey.Username.ToUpper() != username.ToString().ToUpper() || apiKey.Key != key || !apiKey.IsActive)
             {
                 return Unauthorized();
             }

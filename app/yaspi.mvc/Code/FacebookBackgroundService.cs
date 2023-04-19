@@ -14,11 +14,11 @@ public class FacebookBackgroundService : BackgroundService
     private readonly IConfiguration _configuration;
     private readonly string _connectionString;
     private readonly IEventBus _eventBus;
-    private readonly FacebookApiService _facebookApiService;
+    private readonly IFacebookApiService _facebookApiService;
     private readonly ILogger<FacebookBackgroundService> _logger;
 
     public FacebookBackgroundService(ILogger<FacebookBackgroundService> logger, IConfiguration configuration, 
-                                            IEventBus eventBus, FacebookApiService facebookApiService)
+                                            IEventBus eventBus, IFacebookApiService facebookApiService)
     {
         _configuration = configuration;
         _connectionString = _configuration.GetConnectionString("DefaultConnection");
@@ -33,7 +33,7 @@ public class FacebookBackgroundService : BackgroundService
             while (!stoppingToken.IsCancellationRequested)
             {
                 Thread.Sleep(5000);
-                GetYaspiMessagesByConnectorIdQuery query = new GetYaspiMessagesByConnectorIdQuery(2, false, false, _connectionString);
+                GetYaspiMessagesByConnectorIdQuery query = new GetYaspiMessagesByConnectorIdQuery(_facebookApiService.ConnectorId, false, false, _connectionString);
                 IEnumerable<YaspiMessage> messages = query.Execute();
                 System.Console.WriteLine("Facebook Messages to send: " + messages.Count());
                 foreach (var item in messages)

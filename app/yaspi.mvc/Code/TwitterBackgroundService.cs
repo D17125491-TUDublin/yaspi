@@ -16,10 +16,10 @@ public class TwitterBackgroundService : BackgroundService
     private readonly IEventBus _eventBus;
     private readonly string _authorizeUrl;
     private readonly ILogger<TwitterBackgroundService> _logger;
-    private readonly TwitterApiService _twitterApiService;
+    private readonly ITwitterApiService _twitterApiService;
 
     public TwitterBackgroundService(IConfiguration configuration, IEventBus eventBus, 
-            ILogger<TwitterBackgroundService> logger,TwitterApiService twitterBackgroundService)
+            ILogger<TwitterBackgroundService> logger,ITwitterApiService twitterBackgroundService)
     {
         _configuration = configuration;
         _connectionString = _configuration.GetConnectionString("DefaultConnection");
@@ -34,7 +34,7 @@ public class TwitterBackgroundService : BackgroundService
             while (!stoppingToken.IsCancellationRequested)
             {
                 Thread.Sleep(5000);
-                var query = new GetYaspiMessagesByConnectorIdQuery(TwitterApiService.ConnectorId, false, false, _connectionString);
+                var query = new GetYaspiMessagesByConnectorIdQuery(_twitterApiService.ConnectorId, false, false, _connectionString);
                 IEnumerable<YaspiMessage> messages = query.Execute();
                 System.Console.WriteLine("Twitter Messages to send: " + messages.Count());
                 WebClient wc = new WebClient();
