@@ -1,6 +1,6 @@
 namespace yaspi.common;
 
-public class YaspiConnection : IYaspiConnection
+public class YaspiConnection 
 {
     public int YaspiConnectionId { get; set; }
     public int YaspiConnectorId { get; set; }

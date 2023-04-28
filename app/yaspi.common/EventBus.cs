@@ -1,7 +1,6 @@
 namespace yaspi.common;
 
 using Microsoft.Extensions.Configuration;
-using Ninject;
 public class EventBus : IEventBus
 {
     Dictionary<Type, List<object>> _handlers = new Dictionary<Type, List<object>>();

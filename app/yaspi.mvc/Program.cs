@@ -21,6 +21,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+bool USE_TEST_API_SERVICES = false;
 // ***************************************************************
 // Dependency injection - registering services used by controllers
 builder.Services.AddSingleton<IEventBusSubscriber,EventBusSubscriber>();
@@ -30,9 +31,6 @@ builder.Services.AddSingleton<TwitterBackgroundService>();
 builder.Services.AddHostedService(provider => provider.GetRequiredService<TwitterBackgroundService>());
 builder.Services.AddSingleton<FacebookBackgroundService>();
 builder.Services.AddHostedService(provider => provider.GetRequiredService<FacebookBackgroundService>());
-
-bool USE_TEST_API_SERVICES = true;
-
 if (USE_TEST_API_SERVICES)
 {
     builder.Services.AddSingleton<IFacebookApiService,TestFacebookApiService>();

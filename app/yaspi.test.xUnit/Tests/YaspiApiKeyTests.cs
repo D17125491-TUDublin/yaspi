@@ -7,12 +7,11 @@ public class YaspiApiKeyTests : YaspiTestBase {
     [Fact]
     public void GenerateYaspiApiKeyEventAndQueryWorks()
     {
+          // Arrange
         var q1 = new GetYaspiApiKeyQuery("test_user", connectionString);
-        // Arrange
         var e = new GenerateYaspiApiKeyEvent("test_user");
         var q2 = new GetYaspiApiKeyQuery("test_user", connectionString);
         // Act
-        
         var result1 = q1.Execute();
         eventBus.Publish(e);
         var result2 = q2.Execute();

@@ -95,5 +95,6 @@ public class T001_LoginTest
         passwordInput.SendKeys(_password);
         loginButton.Click();
         Thread.Sleep(1000);
+        driver.FindElement(By.Id("logout-button"));
     }
 }

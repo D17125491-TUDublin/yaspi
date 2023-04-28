@@ -100,7 +100,6 @@ public class ConnectorController : YaspiController
         }
         else if (stateIn == "step1") // 
         {
-            // TODO: User pressed 'cancel' button
             WebClient wc = new WebClient();
             wc.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
             string parameters = $"client_id={client_id}&redirect_uri={redirect_uri}&client_secret={client_secret}&code={code}";

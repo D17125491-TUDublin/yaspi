@@ -1,4 +1,5 @@
 ﻿namespace yaspi.common;
+
 public interface IEventBus
 {
     void Publish<T>(T _event) where T : IEvent;

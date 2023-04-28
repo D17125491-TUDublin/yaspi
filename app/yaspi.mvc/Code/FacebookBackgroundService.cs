@@ -33,7 +33,7 @@ public class FacebookBackgroundService : BackgroundService
             while (!stoppingToken.IsCancellationRequested)
             {
                 Thread.Sleep(5000);
-                GetYaspiMessagesByConnectorIdQuery query = new GetYaspiMessagesByConnectorIdQuery(_facebookApiService.ConnectorId, false, false, _connectionString);
+                var query = new GetYaspiMessagesByConnectorIdQuery(_facebookApiService.ConnectorId, false, false, _connectionString);
                 IEnumerable<YaspiMessage> messages = query.Execute();
                 System.Console.WriteLine("Facebook Messages to send: " + messages.Count());
                 foreach (var item in messages)
